@@ -1,0 +1,23 @@
+{
+  "name": "invoice",
+  "version": "0.0.1",
+  "description": "invoice app api",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "pm2start": "pm2 start server.js -i max -f",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "invoice",
+    "finance"
+  ],
+  "author": "socx",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "helmet": "3.12.0",
+    "mongoose": "^5.0.11"
+  }
+}
