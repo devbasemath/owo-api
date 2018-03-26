@@ -8,58 +8,42 @@ var mongoose = require('mongoose'),
   }
 
   exports.createUser = async (req, res, next) => {
-    try {
-      let newUser = new User(req.body);
-      newUser.password = SHA256(req.body.password);
-      const user = await newUser.save();
-      res.status(201).json(user);
-    } catch (err) {
-      next(err);
-    }
+    let newUser = new User(req.body);
+    newUser.password = SHA256(req.body.password);
+    const user = await newUser.save();
+    res.status(201).json(user);
   };
 
   exports.getAllUsers = async (req, res, next) => {
-    try {
-      const users = await User.find({});
-      res.status(200).json(users);
-    } catch(err) {
-      next(err);
-    }
+    const users = await User.find({});
+    res.status(200).json(users);
   };
 
   exports.getUserByEmail = async (req, res, next) => {
-    try {
-      const user = await User.find({email: req.params.email});
-      res.status(200).json(user);
-    } catch (err) {
-      next(err);
-    }
+    const { email } = req.params;
+    const user = await User.find({email: req.params.email});
+    res.status(200).json(user);
   };
 
-  exports.updateUser = (req, res, next) => {
-    User.findOneAndUpdate(
-      {username : req.params.username},
-      req.body,
-      {new: true},
-      (err, user) => {
-        if(err) {
-          res.send(err);
-        }
-        res.json(user)
-      }
-    );
+  exports.replaceUser = async (req, res, next) => {
+    const { email } = req.params;
+    let newUser = req.body;
+    newUser.password = SHA256(req.body.password);
+    const user = await User.findOneAndUpdate(email, newUser);
+    res.status(200).json({'success': true});
   };
 
-  exports.deleteUser = (req, res) => {
-    User.remove(
-      {email : req.params.email},
-      (err, user) => {
-        if(err) {
-          res.send(err);
-        }
-        res.json('user deleted successfully');
-      }
-    );
+  exports.updateUser= async (req, res, next) => {
+    const { email } = req.params;
+    let newUser = req.body;
+    newUser.password = SHA256(req.body.password);
+    const user = await User.findOneAndUpdate(email, newUser);
+    res.status(200).json({'success': true});
+  };
+
+  exports.deleteUser = async (req, res) => {
+    const user = await User.remove({email : req.params.email});
+    res.status(200).json('user deleted successfully');
   };
   // exports.authenticate = (req, res) => {
   //   User.find(
