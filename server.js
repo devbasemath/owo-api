@@ -1,10 +1,22 @@
-var express = require('express');
-var app = express();
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-var routes  = require('./app/routes/invoice');
-var Invoice  = require('./app/models/invoice');
-var helmet = require('helmet');
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const invoiceRoutes = require('./app/routes/invoice');
+const userRoutes = require('./app/routes/user');
+const Invoice = require('./app/models/invoice');
+const User = require('./app/models/user');
+const helmet = require('helmet');
+const logger = require('morgan');
+
+
+const app = express();
+// Connect to DB
+mongoose.connect('mongodb://localhost:27017/enoch');
+
+
+// MIDDLEWARE
+// logger (morgan)
+app.use(logger('dev'));
 
 // Security; XSS Protection, anti-Clickingjacking
 // Context-Security-Policy header etc
@@ -15,17 +27,39 @@ app.use(helmet());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+
+// ROUTES
+invoiceRoutes(app);
+userRoutes(app);
+
+// Catch 404
+app.use((req, res, next) => {
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// Error handler function
+app.use((err, req, res, next) => {
+  const error =
+    app.get('env') === 'development' ? err : {};
+    const status =err.status || 500;
+
+    res.status(status).json({
+      error: {
+        message: error.message
+      }
+    })
+
+    console.error(err);
+
+});
+
+
 // // Set up port for server to listen on
 var port = process.env.PORT || 3000;
-
-// // Connect to DB
-mongoose.connect('mongodb://localhost:27017/invoice');
-
-routes(app);
-
 //Fire up server
 app.listen(port);
-
 // Print friendly message to console
 console.info('Server listening on port: ' + port)
 
