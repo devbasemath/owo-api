@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const logger = require('morgan');
 
 
+
 const app = express();
 // Connect to DB
 mongoose.connect('mongodb://localhost:27017/enoch');
@@ -29,8 +30,8 @@ app.use(bodyParser.json());
 
 
 // ROUTES
-invoiceRoutes(app);
-userRoutes(app);
+// invoiceRoutes(app);
+app.use('/api/users', userRoutes);
 
 // Catch 404
 app.use((req, res, next) => {
