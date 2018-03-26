@@ -1,12 +1,11 @@
 "use strict";
-var mongoose = require('mongoose');
-var Invoice = mongoose.model('Invoice');
+var mongoose = require('mongoose'),
+  Invoice = mongoose.model('Invoice');
 
 exports.createInvoice = function(req, res) {
   var invoice = new Invoice();
     invoice.invoiceid = req.body.invoiceid;
     invoice.clientname = req.body.clientname;
-    console.error(req.body);
     invoice.save((err, createdInvoice) => {
       if(err) {
         res.send(err);
@@ -38,7 +37,6 @@ exports.getInvoiceByInvoiceId = function(req, res) {
     }
   );
 };
-
 exports.updateInvoice = function(req, res) {
   Invoice.findOneAndUpdate(
     {invoiceid : req.params.invoiceid},
