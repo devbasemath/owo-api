@@ -1,14 +1,12 @@
-var mongoose = require('mongoose'),
+const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
-var UserSchema = new Schema({
+const UserSchema = new Schema({
   firstname : {
-    type: String,
-    required: 'Please enter firstname'
+    type: String
   },
   lastname : {
-    type: String,
-    required: 'Please enter lastname'
+    type: String
   },
   email : {
     type: String,
@@ -28,4 +26,4 @@ var UserSchema = new Schema({
   }]
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('user', UserSchema);

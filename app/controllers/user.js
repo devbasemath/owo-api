@@ -1,11 +1,12 @@
 "use strict";
-var mongoose = require('mongoose'),
-  User = mongoose.model('User'),
-  Invoice = mongoose.model('Invoice'),
-  SHA256 = require("crypto-js/sha256"),
-  hash = (password) => {
-    return SHA256(password);
-  }
+const mongoose = require('mongoose');
+const Joi = require('joi');
+const User = mongoose.model('user');
+const Invoice = mongoose.model('invoice');
+const SHA256 = require("crypto-js/sha256");
+const hash = (password) => {
+  return SHA256(password);
+};
 
   exports.createUser = async (req, res, next) => {
     let newUser = new User(req.body);
@@ -45,50 +46,36 @@ var mongoose = require('mongoose'),
     const user = await User.remove({email : req.params.email});
     res.status(200).json('user deleted successfully');
   };
-  // exports.authenticate = (req, res) => {
-  //   User.find(
-  //     {email : req.params.email},
-  //     (err, user) => {
-  //       if(err) {
-  //         res.send(err);
-  //       }
-  //       if(user.password === SHA256(req.params.password)) {
-  //         res.json({authenticated: true});
-  //       } else {
-  //         res.json({authenticated: false});
-  //       }
-  //     }
-  //   );
-  // };
 
-  exports.createUserInvoice = (req, res, next) => {
+  exports.authenticate = async (req, res) => {
+    const matchingUsers = await User.find({email : req.body.email});
+    res.status(200).json({success: matchingUsers[0].password == SHA256(req.body.password)});
+  };
+
+  exports.createUserInvoice = async (req, res, next) => {
+    //Get user
+    const { id } = req.params;
+
+    // Create new invoice
     const newInvoice = new Invoice(req.body);
-    //Gte user
-    const user = User.find({email : req.params.email});
-    newInvoice.user = user;
+    const user = await User.findById(id);
+    newInvoice.owner = user;
+
     // Save invoice
-    newInvoice.save();
+    await newInvoice.save();
+
     // Add invoice to the user invoice collection
-    // user.invoices.push(newInvoice);
-    console.log(user.invoices)
-    console.log(newInvoice)
+    // user.invoices.push(newInvoice); // MAXIMUM STACK EXCEEDED ERROR
+    user.invoices.push({_id: newInvoice._id,
+      invoiceid: newInvoice.invoiceid,
+      clientname: newInvoice.clientname });
+
     // Save user
-    // user.save();
+    await user.save();
     res.status(201).json(newInvoice);
   };
 
-  exports.getUserInvoices = (req, res, next) => {
-    const newInvoice = new Invoice(req.body);
-    //Get user
-    const user = User.find({email : req.params.email}).populate('Invoices');
-
-    console.log(user);
-    // newInvoice.user = user;
-    // // Save invoice
-    // newInvoice.save();
-    // // Add invoice to the user invoice collection
-    // user.invoices.push(newInvoice);
-    // // Save user
-    // user.save();
-    // res.status(201).json(newInvoice);
+  exports.getUserInvoices = async (req, res, next) => {
+    const user = await User.find({email : req.params.email}).populate('invoices');
+    res.status(200).json(user);
   };

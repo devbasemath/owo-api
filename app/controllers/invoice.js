@@ -1,6 +1,6 @@
 "use strict";
 var mongoose = require('mongoose'),
-  Invoice = mongoose.model('Invoice');
+  Invoice = mongoose.model('invoice');
 
 exports.createInvoice = function(req, res) {
   var invoice = new Invoice();

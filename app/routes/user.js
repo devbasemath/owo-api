@@ -9,6 +9,9 @@ router.route('/')
   .get(controller.getAllUsers)
   .post(controller.createUser);
 
+router.route('/authenticate')
+  .post(controller.authenticate);
+
 router.route('/:email')
   .get(controller.getUserByEmail)
   .put(controller.replaceUser)
@@ -17,6 +20,8 @@ router.route('/:email')
 
 router.route('/:email/invoices')
   .get(controller.getUserInvoices)
+
+router.route('/:id/invoices')
   .post(controller.createUserInvoice);
 
 module.exports = router;

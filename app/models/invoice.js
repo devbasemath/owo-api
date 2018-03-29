@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var InvoiceSchema = new Schema({
+const InvoiceSchema = new Schema({
   invoiceid : {
     type: Number,
     required: 'Please enter invoiceid'
@@ -14,11 +14,11 @@ var InvoiceSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  user: {
+  owner: {
     type: Schema.Types.ObjectId,
     ref: 'user'
   }
 });
 
-module.exports = mongoose.model('Invoice', InvoiceSchema);
+module.exports = mongoose.model('invoice', InvoiceSchema);
 
