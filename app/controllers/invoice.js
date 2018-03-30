@@ -1,64 +1,62 @@
 "use strict";
-var mongoose = require('mongoose'),
-  Invoice = mongoose.model('invoice');
+const mongoose = require("mongoose");
+const Invoice = require("../models/invoice");
+const User = require("../models/user");
+const Joi = require("joi");
 
-exports.createInvoice = function(req, res) {
-  var invoice = new Invoice();
-    invoice.invoiceid = req.body.invoiceid;
-    invoice.clientname = req.body.clientname;
-    invoice.save((err, createdInvoice) => {
-      if(err) {
-        res.send(err);
-      }
-      res.json({
-        message: 'Invoice was saved successfully',
-        data: res.json(createdInvoice)
-      });
-    })
+exports.createInvoice = async (req, res, next) => {
+  const owner = await User.findById(req.value.body.owner);
+  const newInvoice = req.value.body;
+  delete newInvoice.owner;
+
+  const invoice = new Invoice(newInvoice);
+  invoice.owner = owner;
+  await invoice.save();
+
+  owner.invoices.push(invoice);
+  await owner.save();
+
+  res.status(201).json(invoice);
 };
 
-exports.getAllInvoices = function(req, res) {
-  Invoice.find((err, invoices) => {
-    if(err) {
-      res.send(err);
-    }
-    res.json(invoices)
-  });
+exports.getAllInvoices = async (req, res, next) => {
+  const invoices = await Invoice.find({});
+  res.status(200).json(invoices);
 };
 
-exports.getInvoiceByInvoiceId = function(req, res) {
-  Invoice.find(
-    {invoiceid : req.params.invoiceid},
-    (err, invoice) => {
-      if(err) {
-        res.send(err);
-      }
-      res.json(invoice)
-    }
-  );
-};
-exports.updateInvoice = function(req, res) {
-  Invoice.findOneAndUpdate(
-    {invoiceid : req.params.invoiceid},
-    req.body,
-    {new: true},
-    (err, invoice) => {
-      if(err) {
-        res.send(err);
-      }
-      res.json(invoice)
-    }
-  );
+exports.getInvoiceByInvoiceId = async (req, res, next) => {
+  const { invoiceId } = req.value.params.invoiceId;
+  const invoice = await Invoice.findById(req.value.params.invoiceId);
+  res.status(200).json(invoice);
 };
 
-exports.deleteInvoice = function(req, res) {
-  Invoice.remove(
-    {invoiceid : req.params.invoiceid},
-    (err, invoice) => {
-      if(err) {
-        res.send(err);
-      }
-      res.json('invoice deleted successfully');
-    }
-  );
+exports.replaceInvoice = async (req, res, next) => {
+  const { invoiceId } = req.value.params;
+  const newInvoice = req.value.body;
+  const invoice = await Invoice.findByIdAndUpdate(invoiceId, newInvoice);
+  res.status(200).json({ success: true });
+};
+
+exports.updateInvoice = async (req, res, next) => {
+  const { invoiceId } = req.value.params;
+  const newInvoice = req.value.body;
+  const invoice = await Invoice.findByIdAndUpdate(invoiceId, newInvoice);
+  res.status(200).json({ success: true });
+};
+
+exports.deleteInvoice = async (req, res) => {
+  const { invoiceId } = req.value.params;
+  const invoice = await Invoice.findById(invoiceId);
+  if (!invoice) {
+    return res.status(404).json({ error: "Invoice does not exist" });
+  }
+  const ownerId = invoice.owner;
+  const owner = await User.findById(ownerId);
+  // Delete invoice
+  await invoice.remove();
+  // Remove from all user invoices
+  owner.invoices.pull(invoice);
+  // persist changes
+  owner.save();
+  res.status(200).json({ success: true });
 };

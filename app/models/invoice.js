@@ -1,24 +1,23 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const InvoiceSchema = new Schema({
-  invoiceid : {
-    type: Number,
-    required: 'Please enter invoiceid'
-  },
-  clientname : {
+  invoiceReference: {
     type: String,
-    required: 'Please enter clientname'
+    required: "Please enter invoice reference"
   },
-  createddate:{
+  clientName: {
+    type: String,
+    required: "Please enter client name"
+  },
+  createdDate: {
     type: Date,
     default: Date.now
   },
   owner: {
     type: Schema.Types.ObjectId,
-    ref: 'user'
+    ref: "user"
   }
 });
 
-module.exports = mongoose.model('invoice', InvoiceSchema);
-
+module.exports = mongoose.model("invoice", InvoiceSchema);

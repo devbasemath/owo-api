@@ -21,8 +21,8 @@ exports.getAllUsers = async (req, res, next) => {
 };
 
 exports.getUserById = async (req, res, next) => {
-  const { userId } = req.params;
-  const user = await User.findById(userId);
+  // const { userId } = req.params;
+  const user = await User.findById(req.value.params.userId);
   res.status(200).json(user);
 };
 
@@ -77,12 +77,12 @@ exports.createUserInvoice = async (req, res, next) => {
   await newInvoice.save();
 
   // Add invoice to the user invoice collection
-  // user.invoices.push(newInvoice); // MAXIMUM STACK EXCEEDED ERROR
-  user.invoices.push({
-    _id: newInvoice._id,
-    invoiceid: newInvoice.invoiceid,
-    clientname: newInvoice.clientname
-  });
+  user.invoices.push(newInvoice); // MAXIMUM STACK EXCEEDED ERROR
+  // user.invoices.push({
+  //   _id: newInvoice._id,
+  //   invoiceid: newInvoice.invoiceid,
+  //   clientname: newInvoice.clientname
+  // });
 
   // Save user
   await user.save();

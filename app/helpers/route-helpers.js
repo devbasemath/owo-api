@@ -49,9 +49,24 @@ module.exports = {
         .required(),
       password: Joi.string().required()
     }),
+    userInvoiceSchema: Joi.object().keys({
+      invoiceReference: Joi.string().required(),
+      clientName: Joi.string().required()
+    }),
     invoiceSchema: Joi.object().keys({
-      invoiceid: Joi.string().required(),
-      clientname: Joi.string().required()
+      owner: Joi.string()
+        .regex(/^[0-9a-zA-Z]{24}$/)
+        .required(),
+      invoiceReference: Joi.string().required(),
+      clientName: Joi.string().required()
+    }),
+    putInvoiceSchema: Joi.object().keys({
+      invoiceReference: Joi.string().required(),
+      clientName: Joi.string().required()
+    }),
+    patchInvoiceSchema: Joi.object().keys({
+      invoiceReference: Joi.string(),
+      clientName: Joi.string()
     }),
     idSchema: Joi.object().keys({
       param: Joi.string()

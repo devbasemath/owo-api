@@ -1,8 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const invoiceRoutes = require("./app/routes/invoice");
-const userRoutes = require("./app/routes/user");
+const invoiceRoutes = require("./app/routes/invoices");
+const userRoutes = require("./app/routes/users");
 const Invoice = require("./app/models/invoice");
 const User = require("./app/models/user");
 const helmet = require("helmet");
@@ -28,6 +28,7 @@ app.use(bodyParser.json());
 // ROUTES
 // invoiceRoutes(app);
 app.use("/api/users", userRoutes);
+app.use("/api/invoices", invoiceRoutes);
 
 // Catch 404
 app.use((req, res, next) => {

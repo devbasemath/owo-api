@@ -44,7 +44,7 @@ router
   .get(validateParam(schemas.idSchema, "userId"), controller.getUserInvoices)
   .post(
     validateParam(schemas.idSchema, "userId"),
-    validateBody(schemas.invoiceSchema),
+    validateBody(schemas.userInvoiceSchema),
     controller.createUserInvoice
   );
 
