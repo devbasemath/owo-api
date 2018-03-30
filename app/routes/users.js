@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const User = require("../models/user");
 const controller = require("../controllers/user");
 const router = require("express-promise-router")();
+const passport = require("passport");
+const passportConf = require("../config/passport-config");
 
 const {
   validateParam,
@@ -20,6 +22,11 @@ router
   .route("/authenticate")
   .post(validateBody(schemas.authenticationSchema), controller.authenticate);
 
+// router.route("/register").post(controller.register);
+// router.route("/login").post(controller.login);
+router
+  .route("/secret")
+  .get(passport.authenticate("jwt", { session: false }), controller.secret);
 // router
 //   .route("/:email")
 //   .get(validateParam(schemas.idSchema, "email"), controller.getUserByEmail);

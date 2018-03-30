@@ -1,18 +1,41 @@
 "use strict";
 const mongoose = require("mongoose");
 const Joi = require("joi");
-const User = mongoose.model("user");
-const Invoice = mongoose.model("invoice");
 const SHA256 = require("crypto-js/sha256");
+const JWT = require("jsonwebtoken");
+
+const User = require("../models/user");
+const Invoice = require("../models/invoice");
+const { JWT_SECRET } = require("../config");
+
 const hash = password => {
   return SHA256(password);
 };
 
+const registerToken = user => {
+  return JWT.sign(
+    {
+      iss: "Socx",
+      sub: user.id,
+      iat: new Date().getTime(),
+      exp: new Date().setDate(new Date().getDate() + 1)
+    },
+    JWT_SECRET
+  );
+};
+
 exports.createUser = async (req, res, next) => {
+  const { email, password } = req.value.body;
+  const foundUser = await User.findOne({ email });
+  if (foundUser) {
+    return res.status(404).json({ error: "Email already exists" });
+  }
   let newUser = new User(req.value.body);
   newUser.password = SHA256(req.value.body.password);
   const user = await newUser.save();
-  res.status(201).json(user);
+
+  const token = registerToken(newUser);
+  res.status(201).json({ token });
 };
 
 exports.getAllUsers = async (req, res, next) => {
@@ -62,6 +85,10 @@ exports.authenticate = async (req, res) => {
   res
     .status(200)
     .json({ success: matchingUsers[0].password == SHA256(req.body.password) });
+};
+
+exports.secret = async (req, res, next) => {
+  console.log("got here");
 };
 
 exports.createUserInvoice = async (req, res, next) => {
