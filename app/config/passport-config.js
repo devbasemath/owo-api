@@ -1,7 +1,7 @@
 const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
 const { ExtractJwt } = require("passport-jwt");
-const LocalStrategy = require("passport-local").Startegy;
+const LocalStrategy = require("passport-local").Strategy;
 
 const { JWT_SECRET } = require("./index");
 const User = require("../models/user");
@@ -31,14 +31,19 @@ passport.use(
 );
 
 // LOCAL STRATEGY
-passport.use(new LocalStrategy({
-  usernamefield = 'email'
-}, async (email, password, done) => {
-  const user = await User.findOne({email});
-  if(!user) {
-    return done(null, false)
-  }
+passport.use(
+  new LocalStrategy(
+    {
+      usernamefield: "email"
+    },
+    async (email, password, done) => {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return done(null, false);
+      }
 
-  // Otherwise return user
-  done(null, user);
-}));
+      // Otherwise return user
+      done(null, user);
+    }
+  )
+);
