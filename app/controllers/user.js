@@ -12,7 +12,7 @@ const hash = password => {
   return SHA256(password);
 };
 
-const registerToken = user => {
+const signToken = user => {
   return JWT.sign(
     {
       iss: "Socx",
@@ -30,11 +30,10 @@ exports.createUser = async (req, res, next) => {
   if (foundUser) {
     return res.status(404).json({ error: "Email already exists" });
   }
-  let newUser = new User(req.value.body);
-  newUser.password = SHA256(req.value.body.password);
+  const newUser = new User(req.value.body);
   const user = await newUser.save();
 
-  const token = registerToken(newUser);
+  const token = signToken(newUser);
   res.status(201).json({ token });
 };
 
@@ -59,16 +58,14 @@ exports.getUserById = async (req, res, next) => {
 
 exports.replaceUser = async (req, res, next) => {
   const { userId } = req.value.params;
-  let newUser = req.value.body;
-  newUser.password = SHA256(req.value.body.password);
+  const newUser = req.value.body;
   const user = await User.findByIdAndUpdate(userId, newUser);
   res.status(200).json({ success: true });
 };
 
 exports.updateUser = async (req, res, next) => {
   const { userId } = req.value.params;
-  let newUser = req.value.body;
-  newUser.password = SHA256(req.value.body.password);
+  const newUser = req.value.body;
   const user = await User.findByIdAndUpdate(userId, newUser);
   res.status(200).json({ success: true });
 };
@@ -79,16 +76,9 @@ exports.deleteUser = async (req, res) => {
   res.status(200).json("user deleted successfully");
 };
 
-exports.authenticate = async (req, res) => {
-  const { email } = req.body.email;
-  const matchingUsers = await User.find(email);
-  res
-    .status(200)
-    .json({ success: matchingUsers[0].password == SHA256(req.body.password) });
-};
-
-exports.secret = async (req, res, next) => {
-  console.log("got here");
+exports.authenticate = async (req, res, next) => {
+  const token = signToken(req.user);
+  res.status(200).json({ token });
 };
 
 exports.createUserInvoice = async (req, res, next) => {
