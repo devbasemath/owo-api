@@ -1,10 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const invoiceRoutes = require("./app/routes/invoices");
 const userRoutes = require("./app/routes/users");
-const Invoice = require("./app/models/invoice");
+const recipientRoutes = require("./app/routes/recipients");
 const User = require("./app/models/user");
+const Recipient = require("./app/models/recipient");
 const helmet = require("helmet");
 const morgan = require("morgan");
 
@@ -15,7 +15,7 @@ const app = express();
 app.use(helmet());
 
 // Connect to DB
-mongoose.connect("mongodb://localhost:27017/enoch");
+mongoose.connect("mongodb://localhost:27017/owo");
 
 // MIDDLEWARES
 // logger (morgan)
@@ -27,9 +27,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // ROUTES
-// invoiceRoutes(app);
 app.use("/api/users", userRoutes);
-app.use("/api/invoices", invoiceRoutes);
+app.use("/api/recipients", recipientRoutes);
 
 // Catch 404
 app.use((req, res, next) => {

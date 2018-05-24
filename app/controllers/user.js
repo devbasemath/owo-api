@@ -5,7 +5,7 @@ const SHA256 = require("crypto-js/sha256");
 const JWT = require("jsonwebtoken");
 
 const User = require("../models/user");
-const Invoice = require("../models/invoice");
+const Recipient = require("../models/recipient");
 const { JWT_SECRET } = require("../config");
 
 const hash = password => {
@@ -43,18 +43,9 @@ exports.getAllUsers = async (req, res, next) => {
 };
 
 exports.getUserById = async (req, res, next) => {
-  // const { userId } = req.params;
   const user = await User.findById(req.value.params.userId);
   res.status(200).json(user);
 };
-
-// exports.getUserByEmail = async (req, res, next) => {
-//   const result = req.value.params;
-//   console.log(result);
-//   const { email } = req.params;
-//   const user = await User.find({ email: req.value.params.email });
-//   res.status(200).json(user);
-// };
 
 exports.replaceUser = async (req, res, next) => {
   const { userId } = req.value.params;
@@ -81,33 +72,28 @@ exports.authenticate = async (req, res, next) => {
   res.status(200).json({ token });
 };
 
-exports.createUserInvoice = async (req, res, next) => {
+exports.createUserRecipient = async (req, res, next) => {
   //Get user
   const { userId } = req.value.params;
 
-  // Create new invoice
-  const newInvoice = new Invoice(req.value.body);
+  // Create new Recipient
+  const newRecipient = new Recipient(req.value.body);
   const user = await User.findById(userId);
-  newInvoice.owner = user;
+  newRecipient.owner = user;
 
-  // Save invoice
-  await newInvoice.save();
+  // Save Recipient
+  await newRecipient.save();
 
-  // Add invoice to the user invoice collection
-  user.invoices.push(newInvoice); // MAXIMUM STACK EXCEEDED ERROR
-  // user.invoices.push({
-  //   _id: newInvoice._id,
-  //   invoiceid: newInvoice.invoiceid,
-  //   clientname: newInvoice.clientname
-  // });
+  // Add Recipient to the user Recipient collection
+  user.recipients.push(newRecipient); // MAXIMUM STACK EXCEEDED ERROR
 
   // Save user
   await user.save();
-  res.status(201).json(newInvoice);
+  res.status(201).json(newRecipient);
 };
 
-exports.getUserInvoices = async (req, res, next) => {
+exports.getUserRecipients = async (req, res, next) => {
   const { userId } = req.params;
-  const user = await User.findById(userId).populate("invoices");
+  const user = await User.findById(userId).populate("recipients");
   res.status(200).json(user);
 };

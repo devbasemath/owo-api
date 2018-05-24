@@ -18,7 +18,7 @@ const passportJWT = passport.authenticate("jwt", { session: false });
 router
   .route("/")
   .get(passportJWT, controller.getAllUsers)
-  .post(validateBody(schemas.userSchema), passportJWT, controller.createUser);
+  .post(validateBody(schemas.userSchema), controller.createUser);
 
 router
   .route("/authenticate")
@@ -27,10 +27,6 @@ router
     passportLogin,
     controller.authenticate
   );
-
-// router
-//   .route("/:email")
-//   .get(validateParam(schemas.idSchema, "email"), controller.getUserByEmail);
 
 router
   .route("/:userId")
@@ -54,17 +50,17 @@ router
   .delete(passportJWT, controller.deleteUser);
 
 router
-  .route("/:userId/invoices")
+  .route("/:userId/recipients")
   .get(
     validateParam(schemas.idSchema, "userId"),
     passportJWT,
-    controller.getUserInvoices
+    controller.getUserRecipients
   )
   .post(
     validateParam(schemas.idSchema, "userId"),
-    validateBody(schemas.userInvoiceSchema),
+    validateBody(schemas.userRecipientSchema),
     passportJWT,
-    controller.createUserInvoice
+    controller.createUserRecipient
   );
 
 module.exports = router;

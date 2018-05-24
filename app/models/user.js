@@ -23,10 +23,10 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  invoices: [
+  recipients: [
     {
       type: Schema.Types.ObjectId,
-      ref: "invoice"
+      ref: "recipient"
     }
   ]
 });

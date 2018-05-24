@@ -1,7 +1,7 @@
 {
-  "name": "invoice",
+  "name": "owo",
   "version": "0.0.1",
-  "description": "invoice app api",
+  "description": "owo app api",
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "invoice",
+    "money",
     "finance"
   ],
   "author": "socx",

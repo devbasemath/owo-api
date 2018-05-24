@@ -35,7 +35,8 @@ module.exports = {
       email: Joi.string()
         .email()
         .required(),
-      password: Joi.string().required()
+      password: Joi.string().required(),
+      method: Joi.string().required()
     }),
     userOptionalSchema: Joi.object().keys({
       firstname: Joi.string(),
@@ -49,24 +50,24 @@ module.exports = {
         .required(),
       password: Joi.string().required()
     }),
-    userInvoiceSchema: Joi.object().keys({
-      invoiceReference: Joi.string().required(),
-      clientName: Joi.string().required()
+    userRecipientSchema: Joi.object().keys({
+      recipientReference: Joi.string().required(),
+      firstName: Joi.string().required()
     }),
-    invoiceSchema: Joi.object().keys({
+    recipientSchema: Joi.object().keys({
       owner: Joi.string()
         .regex(/^[0-9a-zA-Z]{24}$/)
         .required(),
-      invoiceReference: Joi.string().required(),
-      clientName: Joi.string().required()
+      recipientReference: Joi.string().required(),
+      firstName: Joi.string().required()
     }),
-    putInvoiceSchema: Joi.object().keys({
-      invoiceReference: Joi.string().required(),
-      clientName: Joi.string().required()
+    putRecipientSchema: Joi.object().keys({
+      recipientReference: Joi.string().required(),
+      firstName: Joi.string().required()
     }),
-    patchInvoiceSchema: Joi.object().keys({
-      invoiceReference: Joi.string(),
-      clientName: Joi.string()
+    patchRecipientSchema: Joi.object().keys({
+      recipientReference: Joi.string(),
+      firstName: Joi.string()
     }),
     idSchema: Joi.object().keys({
       param: Joi.string()

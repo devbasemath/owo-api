@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const InvoiceSchema = new Schema({
-  invoiceReference: {
+const RecipientSchema = new Schema({
+  recipientReference: {
     type: String,
-    required: "Please enter invoice reference"
+    required: "Please enter recipient reference"
   },
-  clientName: {
+  firstName: {
     type: String,
-    required: "Please enter client name"
+    required: "Please enter first name"
   },
   createdDate: {
     type: Date,
@@ -20,4 +20,4 @@ const InvoiceSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model("invoice", InvoiceSchema);
+module.exports = mongoose.model("recipient", RecipientSchema);
