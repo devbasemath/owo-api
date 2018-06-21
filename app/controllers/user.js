@@ -15,7 +15,7 @@ const hash = password => {
 const signToken = user => {
   return JWT.sign(
     {
-      iss: "Socx",
+      iss: "Owo",
       sub: user.id,
       iat: new Date().getTime(),
       exp: new Date().setDate(new Date().getDate() + 1)

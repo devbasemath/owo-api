@@ -1,3 +1,3 @@
 module.exports = {
-  JWT_SECRET: "socxauthentication"
+  JWT_SECRET: "owoauthentication"
 };
