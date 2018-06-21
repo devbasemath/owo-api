@@ -35,7 +35,7 @@ module.exports = {
       email: Joi.string()
         .email()
         .required(),
-      password: Joi.string().required(),
+      password: Joi.string().required(), // todo: put  regex  here
       method: Joi.string().required()
     }),
     userOptionalSchema: Joi.object().keys({
@@ -43,6 +43,14 @@ module.exports = {
       lastname: Joi.string(),
       email: Joi.string().email(),
       password: Joi.string()
+    }),
+    userRegisterSchema: Joi.object().keys({
+      firstname: Joi.string().required(),
+      lastname: Joi.string().required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
+      confirmPassword: Joi.any().valid(Joi.ref("password")).required(),
+      method: Joi.string().required()
     }),
     authenticationSchema: Joi.object().keys({
       email: Joi.string()

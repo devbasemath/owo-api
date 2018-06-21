@@ -15,16 +15,21 @@ const {
 const passportLogin = passport.authenticate("local", { session: false });
 const passportJWT = passport.authenticate("jwt", { session: false });
 
+
+router
+  .route("/oauth/google")
+  .post(passport.authenticate("googleToken", { session: false }));
+  
 router
   .route("/")
   .get(passportJWT, controller.getAllUsers)
-  .post(validateBody(schemas.userSchema), controller.createUser);
+  .post(validateBody(schemas.userRegisterSchema), controller.createUser);
 
 router
   .route("/authenticate")
   .post(
     validateBody(schemas.authenticationSchema),
-    passportLogin,
+    passport.authenticate("local", { session: false }),
     controller.authenticate
   );
 

@@ -68,7 +68,9 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.authenticate = async (req, res, next) => {
-  const token = signToken(req.user);
+  // Only  get here if the LocalStrategy was successful
+  // So simply send token
+  const token = signToken(req.value.body);
   res.status(200).json({ token });
 };
 

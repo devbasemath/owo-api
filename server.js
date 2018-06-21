@@ -31,11 +31,13 @@ app.use("/api/users", userRoutes);
 app.use("/api/recipients", recipientRoutes);
 
 // Catch 404
-app.use((req, res, next) => {
-  const err = new Error("Not Found");
-  err.status = 404;
-  next(err);
-});
+// app.use((req, res, next) => {
+//   console.log('there wasan error=>')
+//   console.log(res)
+//   const err = new Error("Not Found");
+//   err.status = 404;
+//   next(err);
+// });
 
 // Error handler function
 app.use((err, req, res, next) => {
